@@ -1,10 +1,23 @@
 def input_students
-  puts "Please enter student information"
-  puts "To finish, type stop as name"
   #Create empty array
   students = []
   #array of possible cohorts
-  cohorts = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
+  cohorts = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december"
+  ]
+  puts "Please enter student information"
+  puts "To finish, type stop as name"
   #Get the first name
   puts "Name: "
   name = gets.chomp
@@ -17,6 +30,10 @@ def input_students
     cohort = "default".to_sym
   else
     puts "Please enter a valid cohort"
+    until cohorts.include? cohort
+      puts "Cohort: "
+      cohort = gets.chomp.downcase
+    end
   end
   puts "Height (cm): "
   height = gets.chomp + "cm"
@@ -41,7 +58,7 @@ def input_students
       puts "Please enter a valid cohort"
       until cohorts.include? cohort
         puts "Cohort: "
-        cohort = gets.chomp
+        cohort = gets.chomp.downcase
       end
     end
     puts "Height (cm): "
