@@ -82,9 +82,20 @@ def show_students
   print_footer
 end
 
+def save_students
+  file = File.open("students.csv", "w")
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort], student[:height], student[:CoB]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
+  file.close
+end
+
 def print_menu
   puts "1. Input students"
   puts "2. View the students"
+  puts "3. Save the list to students.csv"
   puts "9. Exit"
 end
 
@@ -94,6 +105,8 @@ def process(selection)
     input_students
   when "2"
     show_students
+  when "3"
+    save_students
   when "9"
     exit
   else
