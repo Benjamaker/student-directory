@@ -66,22 +66,28 @@ def input_students
     puts "Country of birth: "
     c_o_b = gets.chomp.upcase
   end
-  #return the array of students
-  students
+  #return the array of students sorted by cohort
+  students.sort_by{|student|student[:cohort]}
 end
 
 def print_header
   puts "The Students of Villains Academy"
   puts "--------------"
 end
+
 def print_names(students)
   students.each_with_index do |student, index|
     puts "#{index +1}. #{student[:name].capitalize.center(10)} #{student[:height]} #{student[:CoB].center(15)} (#{student[:cohort]} cohort)"
   end
 end
+
 def print_footer(students)
   puts "--------------"
-  puts "Overall, we have #{students.count} great students."
+  if students.count == 1
+    puts "Overall, we have 1 great student."
+  elsif students.count > 1
+    puts "Overall, we have #{students.count} great students."
+  end
 end
 
 students = input_students
