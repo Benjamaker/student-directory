@@ -1,7 +1,12 @@
 #empty array of students available everywhere
 @students = []
 
-def input_students
+def input_names
+  puts "Name: "
+  name = STDIN.gets.chomp
+end
+
+def input_cohort
   #array of possible cohorts
   cohorts = [
     "january",
@@ -17,13 +22,8 @@ def input_students
     "november",
     "december"
   ]
-  puts "Please enter student information"
-  puts "To finish, type stop as name"
-  #Get the first name
-  puts "Name: "
-  name = gets.chomp
   puts "Cohort: "
-  cohort = gets.chomp.downcase
+  cohort = STDIN.gets.chomp.downcase
   #conditional checks that the cohort exists, that there are no typos and returns a default if empty
   if cohorts.include? cohort
     cohort = cohort.to_sym
@@ -33,48 +33,41 @@ def input_students
     puts "Please enter a valid cohort"
     until cohorts.include? cohort
       puts "Cohort: "
-      cohort = gets.chomp.downcase
+      cohort = STDIN.gets.chomp.downcase
     end
   end
+end
+
+def input_height
   puts "Height (cm): "
-  height = gets.chomp + "cm"
+  height = STDIN.gets.chomp + "cm"
+end
+
+def input_c_o_b
   puts "Country of birth: "
-  c_o_b = gets.chomp.upcase
+  c_o_b = STDIN.gets.chomp.upcase
+end
+
+def input_students
+  puts "Please enter student information"
+  puts "To finish, type stop as name"
   #while the name is not empty, loop
-  while !name.empty? do
+  loop do
+    name = input_names
+    break if name == "stop"
     #add a hash of student data to the students array
-    @students << {name: name, cohort: cohort, height: height, CoB: c_o_b}
+    @students << {name: name, cohort: input_cohort, height: input_height, CoB: input_c_o_b}
     #conditional ensures appropriate sing/plural
     if @students.count == 1
       puts "Now we have #{@students.count} student"
     else
       puts "Now we have #{@students.count} students"
     end
-    #get another student from the user
-    puts "Name: "
-    name = gets.chomp
-    break if name == "stop"
-    puts "Cohort: "
-    cohort = gets.chomp.downcase
-    if cohorts.include? cohort
-      cohort = cohort.to_sym
-    elsif cohort.empty?
-      cohort = "default".to_sym
-    else
-      puts "Please enter a valid cohort"
-      until cohorts.include? cohort
-        puts "Cohort: "
-        cohort = gets.chomp.downcase
-      end
-    end
-    puts "Height (cm): "
-    height = gets.chomp + "cm"
-    puts "Country of birth: "
-    c_o_b = gets.chomp.upcase
   end
+end
+
   #return the array of students sorted by cohort
   # @students.sort_by{|student|student[:cohort]}
-end
 
 def show_students
   print_header
@@ -92,13 +85,25 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort, height, c_o_b = line.chomp.split(",")
     @students << {name: name, cohort: cohort.to_sym, height: height, CoB: c_o_b}
   end
   file.close
+end
+
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist"
+    exit
+  end
 end
 
 def print_menu
@@ -129,7 +134,7 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -153,4 +158,5 @@ def print_footer
   end
 end
 
+try_load_students
 interactive_menu
